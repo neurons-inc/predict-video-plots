@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 rc("font", family="serif")
 
-
 FPS: int = 24
 
 
@@ -53,12 +52,15 @@ def gen_graph_video(scores_csv: str, path_video: str) -> None:
     y_data[:,0] = scores["Cognitive Demand"]
     y_data[:,1] = scores["Focus"]
 
-    # SET UP FIGURE
-    fig, ax = plt.subplots(figsize=[20,6])
-
     # SET UP VIDEO WRITER
-    frame_width, frame_height = 1920, 576 #1024, 576
+    frame_width, frame_height, fig_height = 1920, 576, 6 #1024, 576
     video_dir = os.path.dirname(path_video)
+
+    if frame_height == height:
+        frame_height, fig_height = int(576/1.5), int(6/1.5)
+
+    # SET UP FIGURE
+    fig, ax = plt.subplots(figsize=[20, fig_height])
 
     # DEFINE VIDEO PATHS
     VIDEO_GRAPH_PATH = os.path.join(video_dir, "video_graph.mp4")
@@ -71,16 +73,14 @@ def gen_graph_video(scores_csv: str, path_video: str) -> None:
         ax.clear()
 
         # PLOT THE LINES
-        ax.plot(x_data[:t], y_data[:t, 0], linestyle='-', lw=3.5, color='#849FFF', alpha=1., label="Cognitive Demand")
-        ax.plot(x_data[:t], y_data[:t, 1], linestyle='-', lw=3.5, color='#FFD04B', alpha=1., label="Focus")
+        ax.plot(x_data[:t], y_data[:t, 0], linestyle='-', lw=2.0, color='#C5ABFD', alpha=1., label="Cognitive Demand")
+        ax.plot(x_data[:t], y_data[:t, 1], linestyle='-', lw=2.0, color='#FFD04B', alpha=1., label="Focus")
 
         # SET UP AXIS
         ax.set_ylim(0., 100.)
         ax.set_xlim(0, num_frames_video/FPS)
-        ax.set_xticks(np.arange(0, num_frames_video/FPS, 1))
-        ax.set_xticklabels([f"{int(t//60):02d}:{int(t%60):02d}" for t in np.arange(0, num_frames_video/FPS, 1)])
-        #ax.set_xlabel('Time (sec)', fontsize=16, color='#FF7B9C')
-        #ax.set_ylabel('Predict scores', fontsize=16, color='#FF7B9C')
+        ax.set_xticks(np.arange(0, num_frames_video/FPS, 2))
+        ax.set_xticklabels([f"{int(t//60):02d}:{int(t%60):02d}" for t in np.arange(0, num_frames_video/FPS, 2)])
 
         # ADD GRID
         ax.grid(color='lightgrey', linestyle='-', alpha=0.35)
@@ -93,7 +93,7 @@ def gen_graph_video(scores_csv: str, path_video: str) -> None:
 
         # SAVE CURRENT FIGURE AS AN IMAGE
         temp_img_path = os.path.join(video_dir, 'temp_plot.png')
-        plt.savefig(temp_img_path, dpi=300, bbox_inches='tight')
+        plt.savefig(temp_img_path, bbox_inches='tight')
 
         # READ THE IMAGE AND RESIDE TO DESIRED FRAME SIZE
         frame = cv2.imread(temp_img_path)
@@ -125,6 +125,7 @@ def gen_graph_video(scores_csv: str, path_video: str) -> None:
     # DELETE TEMP FILES
     os.remove(temp_img_path)
     os.remove(VIDEO_PADDED_PATH)
+    os.remove(VIDEO_GRAPH_PATH)
 
 
 if __name__ == '__main__':
