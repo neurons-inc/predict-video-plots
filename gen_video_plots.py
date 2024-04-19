@@ -52,15 +52,17 @@ def gen_graph_video(scores_csv: str, path_video: str, metric: str) -> None:
     y_data[:,0] = scores["Cognitive Demand"]
     y_data[:,1] = scores["Focus"]
 
-    if metric == "focus":
-        focus = True
-
-    if metric == "cognitive_demand":
-        cognitive_demand = True
-
     if metric == "both":
         focus = True
         cognitive_demand = True
+
+    if metric == "focus":
+        focus = True
+        cognitive_demand = False
+
+    if metric == "cognitive_demand":
+        cognitive_demand = True
+        focus = False
 
     # SET UP VIDEO WRITER
     frame_width, frame_height = 1280, 480 #1024, 384
@@ -90,9 +92,9 @@ def gen_graph_video(scores_csv: str, path_video: str, metric: str) -> None:
     for t in range(len(x_data)):
         ax.clear()
 
-        if focus:
-            ax.plot(x_data, y_data[:, 0], linestyle='-', lw=1.5, color='#C5ABFD', alpha=1., label="Cognitive Demand")
         if cognitive_demand:
+            ax.plot(x_data, y_data[:, 0], linestyle='-', lw=1.5, color='#C5ABFD', alpha=1., label="Cognitive Demand")
+        if focus:
             ax.plot(x_data, y_data[:, 1], linestyle='-', lw=1.5, color='#FFD04B', alpha=1., label="Focus")
 
         # ADJUSTMENT TO AVOID RESIZING DUE TO ANNOTATIONS
