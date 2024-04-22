@@ -78,7 +78,6 @@ def gen_graph_video(scores_csv: str, path_video: str, metric: str) -> None:
     for spine in ax.spines.values():
         spine.set_edgecolor(grey_color)
 
-    # Hide the top and right spines
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
@@ -113,7 +112,7 @@ def gen_graph_video(scores_csv: str, path_video: str, metric: str) -> None:
             label_x_position = x_data[t] + offset_x if t <= num_frames_video / 2 else x_data[t] - offset_x
             offset_y = 0.005 * (max(y_data[:,0]) - min(y_data[:,0]))
             label_y_position = y_pos_cog_demand + offset_y
-            
+
             ax.text(label_x_position, label_y_position, f"Cognitive Demand: {y_data[t, 0]:.0f}", fontsize=8, verticalalignment='bottom', 
                     ha='right' if t > num_frames_video / 2 else 'left', color=grey_color, 
                     bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.1'))
@@ -124,7 +123,7 @@ def gen_graph_video(scores_csv: str, path_video: str, metric: str) -> None:
             label_x_position = x_data[t] + offset_x if t <= num_frames_video / 2 else x_data[t] - offset_x            
             offset_y = 0.005 * (max(y_data[:,1]) - min(y_data[:,1]))
             label_y_position = y_pos_focus + offset_y
-            
+
             ax.text(label_x_position, label_y_position, f"Focus: {y_data[t, 1]:.0f}", 
                     fontsize=8, verticalalignment='bottom', 
                     ha='right' if t > num_frames_video / 2 else 'left', color=grey_color, 
